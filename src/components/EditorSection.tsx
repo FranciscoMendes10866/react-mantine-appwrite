@@ -20,6 +20,7 @@ export const EditorSection = () => {
           userId: auth?.currentSession?.$id as string,
         });
         form.reset();
+        editor?.toggleEditor();
         return;
       }
 
