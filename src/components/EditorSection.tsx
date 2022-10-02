@@ -74,6 +74,7 @@ export const EditorSection = () => {
         form.reset();
         editor?.toggleEditor();
         queryClient.invalidateQueries(["getNotes/"]);
+        editor?.handleSelectNote(undefined);
       }
     },
     [editor, form, deleteMutation, queryClient]

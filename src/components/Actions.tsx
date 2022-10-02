@@ -11,8 +11,10 @@ export const Actions = () => {
   const handleOnClick = useCallback(() => {
     editor?.toggleEditor();
     const { title, content } = form.values;
-    if (title.length && content.length) form.reset();
-  }, [editor]);
+    if (title.length && content.length) {
+      form.reset();
+    }
+  }, [editor, form]);
 
   return (
     <Button
