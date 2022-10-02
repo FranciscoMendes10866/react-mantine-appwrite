@@ -7,13 +7,13 @@ import Joi from "joi";
 
 import { appwrite } from "../utils";
 
-interface ICreateNote {
+export interface ICreateNote {
   title: string;
   content: string;
   userId: string;
 }
 
-interface IUpdateNote extends ICreateNote {
+export interface IUpdateNote extends ICreateNote {
   $id: string;
 }
 

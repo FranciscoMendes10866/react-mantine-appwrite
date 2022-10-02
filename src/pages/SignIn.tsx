@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { useForm, joiResolver } from "@mantine/form";
 import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
 
 import { useAuth } from "../contexts/Auth";
 
@@ -31,6 +32,12 @@ export const SignIn = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
+  const { mutateAsync: signinMutation } = useMutation(
+    async ({ email, password }: IFormValues) => {
+      return await auth?.login(email as string, password as string);
+    }
+  );
+
   const form = useForm<IFormValues>({
     validate: joiResolver(schema),
     initialValues: {
@@ -42,14 +49,14 @@ export const SignIn = () => {
   const handleOnSubmit = useCallback(
     async (values: IFormValues) => {
       try {
-        await auth?.login(values.email, values.password);
+        await signinMutation(values)
         navigate("/editor");
         form.reset();
       } catch (err) {
         console.error(err);
       }
     },
-    [auth, form]
+    [auth, form, signinMutation]
   );
 
   return (
