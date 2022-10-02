@@ -21,13 +21,11 @@ export const NoteList = () => {
   const editor = useEditor();
   const form = useFormContext();
 
-  const apiRequest = useCallback(async () => {
+  const { data, refetch } = useQuery(["getNotes/"], async () => {
     return await appwrite.databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
       Query.equal("userId", auth?.currentSession?.$id),
     ]);
-  }, [auth]);
-
-  const { data, refetch } = useQuery(["getNotes/"], apiRequest);
+  });
 
   const handleOnSelect = useCallback(
     (item: Models.Document) => {
