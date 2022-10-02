@@ -27,7 +27,7 @@ interface IEditorContext {
   handleSelectNote: (note?: Models.Document) => void;
 }
 
-interface IFormEditorValues {
+export interface IFormEditorValues {
   title: string;
   content: string;
 }

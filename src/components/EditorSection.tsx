@@ -7,6 +7,7 @@ import { TextEditor } from "../components/TextEditor";
 import { useAuth } from "../contexts/Auth";
 import {
   ICreateNote,
+  IFormEditorValues,
   IUpdateNote,
   useEditor,
   useFormContext,
@@ -36,12 +37,11 @@ export const EditorSection = () => {
     }
   );
 
-  const handleOnSubmit: MouseEventHandler<HTMLButtonElement> = useCallback(
-    async (e) => {
-      e.preventDefault();
+  const handleOnSubmit = useCallback(
+    async (values: IFormEditorValues) => {
       if (!editor?.selectedNote) {
         await createMutation({
-          ...form.values,
+          ...values,
           userId: auth?.currentSession?.$id as string,
         });
         form.reset();
@@ -50,7 +50,7 @@ export const EditorSection = () => {
         return;
       }
 
-      const { title, content } = form.values;
+      const { title, content } = values;
       const { $id, userId } = editor?.selectedNote;
       await updateMutation({
         $id,
@@ -81,7 +81,11 @@ export const EditorSection = () => {
   );
 
   return (
-    <Box component="form" style={{ width: "calc(100% - 400px)", padding: 20 }}>
+    <Box
+      component="form"
+      style={{ width: "calc(100% - 400px)", padding: 20 }}
+      onSubmit={form.onSubmit(handleOnSubmit)}
+    >
       <Box
         component="div"
         style={{
@@ -98,7 +102,7 @@ export const EditorSection = () => {
         />
 
         <Box component="div" style={{ display: "flex", alignItems: "center" }}>
-          <ActionIcon onClick={handleOnSubmit}>
+          <ActionIcon type="submit">
             <IconDeviceFloppy size={30} />
           </ActionIcon>
 
