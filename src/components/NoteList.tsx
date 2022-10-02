@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from "react";
-import { Box, Input, Title, Space } from "@mantine/core";
+import { useCallback } from "react";
+import { Box, Input, Title, Space, ActionIcon } from "@mantine/core";
 import { IconRefresh, IconSearch } from "@tabler/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Models, Query } from "appwrite";
@@ -27,7 +27,7 @@ export const NoteList = () => {
     ]);
   }, [auth]);
 
-  const { data } = useQuery(["getNotes/"], apiRequest);
+  const { data, refetch } = useQuery(["getNotes/"], apiRequest);
 
   const handleOnSelect = useCallback(
     (item: Models.Document) => {
@@ -46,6 +46,10 @@ export const NoteList = () => {
     },
     [editor, form]
   );
+
+  const handleRefetch = useCallback(async () => {
+    await refetch();
+  }, [refetch]);
 
   return (
     <Box
@@ -68,7 +72,9 @@ export const NoteList = () => {
         }}
       >
         <Title>Editor</Title>
-        <IconRefresh size={25} />
+        <ActionIcon onClick={handleRefetch}>
+          <IconRefresh size={25} />
+        </ActionIcon>
       </Box>
       <Space h="xl" />
 
