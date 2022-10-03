@@ -34,7 +34,7 @@ export const SignIn = () => {
 
   const { mutateAsync: signinMutation } = useMutation(
     async ({ email, password }: IFormValues) => {
-      return await auth?.login(email as string, password as string);
+      return await auth?.login(email, password);
     }
   );
 

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { Box, Input, Title, Space, ActionIcon } from "@mantine/core";
 import { IconRefresh, IconSearch } from "@tabler/icons";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +17,8 @@ import {
 import { appwrite } from "../utils";
 
 export const NoteList = () => {
+  const [searchTerm, setSearchTerm] = useState<string>();
+
   const auth = useAuth();
   const editor = useEditor();
   const form = useFormContext();
@@ -48,6 +50,20 @@ export const NoteList = () => {
   const handleRefetch = useCallback(async () => {
     await refetch();
   }, [refetch]);
+
+  const filteredNotes = useMemo(
+    () =>
+      data?.documents.filter((elm) => elm?.title.includes(searchTerm)) ?? [],
+    [data, searchTerm]
+  );
+
+  const handleOnChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const { value } = e.target;
+      setSearchTerm(value);
+    },
+    [setSearchTerm]
+  );
 
   return (
     <Box
@@ -81,13 +97,14 @@ export const NoteList = () => {
         mx="lg"
         icon={<IconSearch size={16} />}
         placeholder="Search..."
+        onChange={handleOnChange}
       />
       <Space h="xl" />
 
       <Actions />
 
       <Box component="div" style={{ marginTop: 15, overflow: "auto" }}>
-        {data?.documents.map((elm, elmIndex) => (
+        {filteredNotes.map((elm, elmIndex) => (
           <Box
             key={`note-item-${elmIndex}`}
             component="div"
