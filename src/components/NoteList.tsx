@@ -3,6 +3,7 @@ import { Box, Input, Title, Space, ActionIcon } from "@mantine/core";
 import { IconRefresh, IconSearch } from "@tabler/icons";
 import { useQuery } from "@tanstack/react-query";
 import { Models, Query } from "appwrite";
+import { useDebounce } from "usehooks-ts"
 
 import { Actions } from "./Actions";
 
@@ -17,7 +18,8 @@ import {
 import { appwrite } from "../utils";
 
 export const NoteList = () => {
-  const [searchTerm, setSearchTerm] = useState<string>();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedValue = useDebounce<string>(searchTerm, 250)
 
   const auth = useAuth();
   const editor = useEditor();
@@ -53,8 +55,8 @@ export const NoteList = () => {
 
   const filteredNotes = useMemo(
     () =>
-      data?.documents.filter((elm) => elm?.title.includes(searchTerm)) ?? [],
-    [data, searchTerm]
+      data?.documents.filter((elm) => elm?.title.includes(debouncedValue)) ?? [],
+    [data, debouncedValue]
   );
 
   const handleOnChange = useCallback(
